@@ -95,3 +95,4 @@ export class SomeServiceInCollectingModule {
 * If your provider has dependencies, set `standalone` to `false` to have access to the
   declaring module's providers. Doing this will result in a `forwardRef` of the declaring
   module by the collecting module.
+* Multi providers are not supported in `DynamicModule`s.
