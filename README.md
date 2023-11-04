@@ -39,7 +39,7 @@ export class MyModule {}
 ## Usage
 
 **Note:** This document assumes you are using the patch. If for some reason you can't, see 
-[the failsafe method](Using-the-failsafe-decorator).
+[the failsafe method](.#Using-the-failsafe-decorator).
 
 This package adds the `multi` attribute to providers. You can then collect these providers
 into an array using the `collect` function in the `imports` attribute of a target module.
