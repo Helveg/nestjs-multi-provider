@@ -67,6 +67,20 @@ export class SomeServiceInCollectingModule {
 }
 ```
 
+## Using the failsafe decorator
+
+Instead of using the patched `Module` decorator, you can also decorate any modules that
+provide multi-providers with the `ModuleWithMulti` decorator:
+
+```typescript
+import { ModuleWithMulti } from "nestjs-multi-provider";
+
+@ModuleWithMulti({
+    providers: [{provide: "something", useValue: 1, multi: true}]
+})
+export class MyModule {}
+```
+
 ## Important notes
 
 * Your providers are not available unless you use `collect`.

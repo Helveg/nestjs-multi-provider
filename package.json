@@ -1,6 +1,6 @@
 {
   "name": "nestjs-multi-provider",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "author": "Helveg <robin.deschepper93@gmail.com>",
   "license": "MIT",
   "main": "lib/index.js",
