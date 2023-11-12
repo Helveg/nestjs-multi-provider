@@ -5,7 +5,7 @@ import Module = require('module')
 import nest = require('@nestjs/common')
 import { processMultiProviders } from './multi-provider'
 import type { ModuleWithMultiMetadata } from './multi-provider.interface'
-import type { ModuleMetadata } from '@nestjs/common'
+import type {ModuleMetadata, Type} from '@nestjs/common'
 
 const originalRequire = Module.prototype.require
 
@@ -13,10 +13,10 @@ declare module '@nestjs/common' {
     export function Module(metadata: ModuleWithMultiMetadata): ClassDecorator
 }
 
-export const ModuleWithMulti = (metadata: ModuleWithMultiMetadata) => (target: Function) =>
-    nest.Module(processModuleMetadata(target, metadata))(target)
+export const ModuleWithMulti = (metadata: ModuleWithMultiMetadata) => (target: Type) =>
+    nest.Module(processMultiMetadata(target, metadata))(target)
 
-function processModuleMetadata(target: Function, metadata: ModuleWithMultiMetadata): ModuleMetadata {
+export function processMultiMetadata(target: Type, metadata: ModuleWithMultiMetadata): ModuleMetadata {
     if (metadata.providers) {
         const providers = processMultiProviders(target, metadata.providers)
         const replacedProviders = providers.filter((provider) => !metadata.providers.includes(provider))
@@ -28,13 +28,20 @@ function processModuleMetadata(target: Function, metadata: ModuleWithMultiMetada
     return metadata as ModuleMetadata
 }
 
+export function createMultiModule(metadata: ModuleWithMultiMetadata): Type {
+    @ModuleWithMulti(metadata)
+    class MultiModule {}
+
+    return MultiModule
+}
+
 function patchedRequire() {
     const module = originalRequire.apply(this, arguments)
     if (arguments[0] === '@nestjs/common') {
         return {
             ...module,
-            Module: (metadata: ModuleWithMultiMetadata) => (target: Function) =>
-                module.Module(processModuleMetadata(target, metadata))(target),
+            Module: (metadata: ModuleWithMultiMetadata) => (target: Type) =>
+                module.Module(processMultiMetadata(target, metadata))(target),
         }
     }
     return module
