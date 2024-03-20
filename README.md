@@ -81,6 +81,24 @@ import { ModuleWithMulti } from "nestjs-multi-provider";
 export class MyModule {}
 ```
 
+## During testing
+
+I have noticed during testing that the monkey patch doesn't always function because
+certain statements may be hoisted above the patch. You can overcome this by creating
+a statement that itself will be hoisted. For example, for Jest:
+
+```
+import { ModuleWithMulti } from "nestjs-multi-provider";
+
+jest.mock('@nestjs/common', () => {
+  const nestjsCommon = jest.requireActual('@nestjs/common');
+  return {
+    ...nestjsCommon,
+    Module: ModuleWithMulti,
+  };
+});
+```
+
 ## Important notes
 
 * Your providers are not available unless you use `collect`.
